@@ -3,6 +3,8 @@ import Header from '@components/Header'
 import Footer from '@components/Footer'
 import { prisma } from '@lib/db'
 
+export const dynamic = 'force-dynamic'
+
 export default async function NotFound() {
   const settings = await prisma.siteSetting.findFirst()
 
