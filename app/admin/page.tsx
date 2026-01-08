@@ -4,6 +4,7 @@ import AdminDashboard from '@components/AdminDashboard'
 import { prisma } from '@lib/db'
 import { isAdmin } from '@lib/auth'
 import { redirect } from 'next/navigation'
+import { Category, Product, Slide, Order, Message, Notification, Review, DeliverySetting, SiteSetting } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
 
@@ -11,15 +12,15 @@ export default async function Admin({ searchParams }: { searchParams: Promise<{ 
   const { tab } = await searchParams
   if (!await isAdmin()) redirect('/admin/login')
 
-  let settings = null
-  let categories: any[] = []
-  let products: any[] = []
-  let slides: any[] = []
-  let orders: any[] = []
-  let messages: any[] = []
-  let notifications: any[] = []
-  let reviews: any[] = []
-  let deliverySettings = null
+  let settings: SiteSetting | null = null
+  let categories: Category[] = []
+  let products: (Product & { category: Category })[] = []
+  let slides: Slide[] = []
+  let orders: (Order & { items: { product: Product }[] })[] = []
+  let messages: Message[] = []
+  let notifications: Notification[] = []
+  let reviews: (Review & { user: { name: string }, product: Product })[] = []
+  let deliverySettings: DeliverySetting | null = null
 
   try {
     settings = await prisma.siteSetting.findFirst()

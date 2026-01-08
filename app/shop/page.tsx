@@ -4,12 +4,13 @@ import ShopGrid from '@components/ShopGrid'
 import { prisma } from '@lib/db'
 import Image from 'next/image'
 import { Suspense } from 'react'
+import { Category, Product } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
 
 export default async function Shop() {
   let settings = null
-  let categories: any[] = []
+  let categories: (Category & { items: Product[] })[] = []
 
   try {
     settings = await prisma.siteSetting.findFirst()
