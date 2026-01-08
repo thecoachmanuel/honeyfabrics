@@ -23,7 +23,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 })
     }
 
-    cookies().set('user_session', user.id.toString(), {
+    const cookieStore = await cookies()
+    cookieStore.set('user_session', user.id.toString(), {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24 * 7, // 7 days
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
     })
     
     // Ensure no admin session is active
-    cookies().delete('admin_session')
+    cookieStore.delete('admin_session')
 
     return NextResponse.json({ success: true, user: { id: user.id, name: user.name, email: user.email } })
   } catch (error) {

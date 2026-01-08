@@ -21,15 +21,18 @@ function verify(token: string) {
 export async function setAdminSession() {
   const payload = `${Date.now()}`
   const token = sign(payload)
-  cookies().set(COOKIE_NAME, token, { httpOnly: true, path: '/', maxAge: 60 * 60 * 24 })
+  const cookieStore = await cookies()
+  cookieStore.set(COOKIE_NAME, token, { httpOnly: true, path: '/', maxAge: 60 * 60 * 24 })
 }
 
-export function isAdmin() {
-  const token = cookies().get(COOKIE_NAME)?.value
+export async function isAdmin() {
+  const cookieStore = await cookies()
+  const token = cookieStore.get(COOKIE_NAME)?.value
   if (!token) return false
   return verify(token)
 }
 
-export function clearAdmin() {
-  cookies().delete(COOKIE_NAME)
+export async function clearAdmin() {
+  const cookieStore = await cookies()
+  cookieStore.delete(COOKIE_NAME)
 }

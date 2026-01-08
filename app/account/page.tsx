@@ -8,7 +8,7 @@ import { formatNgn } from '@lib/utils'
 import ProfileEditForm from '@components/ProfileEditForm'
 
 export default async function Account() {
-  const cookieStore = cookies()
+  const cookieStore = await cookies()
   const session = cookieStore.get('user_session')
 
   if (!session?.value) {

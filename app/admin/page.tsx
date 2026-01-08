@@ -6,7 +6,7 @@ import { isAdmin } from '@lib/auth'
 import { redirect } from 'next/navigation'
 
 export default async function Admin({ searchParams }: { searchParams: { tab?: string } }) {
-  if (!isAdmin()) redirect('/admin/login')
+  if (!await isAdmin()) redirect('/admin/login')
   const settings = await prisma.siteSetting.findFirst()
   const categories = await prisma.category.findMany()
   const products = await prisma.product.findMany({ include: { category: true } })

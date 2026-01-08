@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
 
     // 2. Handle User
     let userId: number | null = null
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
     const session = cookieStore.get('user_session')
 
     if (session?.value) {

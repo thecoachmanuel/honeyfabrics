@@ -6,8 +6,8 @@ import { redirect } from 'next/navigation'
 import { formatNgn } from '@lib/utils'
 import Link from 'next/link'
 
-export default async function MyOrders() {
-  const cookieStore = cookies()
+export default async function Orders() {
+  const cookieStore = await cookies()
   const session = cookieStore.get('user_session')
 
   if (!session?.value) {

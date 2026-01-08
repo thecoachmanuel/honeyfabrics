@@ -12,7 +12,8 @@ export async function POST(req: NextRequest) {
   if (u === U && p === P) {
     await setAdminSession()
     // Ensure no user session is active
-    cookies().delete('user_session')
+    const cookieStore = await cookies()
+    cookieStore.delete('user_session')
     return NextResponse.json({ ok: true })
   }
   return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })

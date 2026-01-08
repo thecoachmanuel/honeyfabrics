@@ -8,7 +8,7 @@ export default async function CheckoutPage() {
   const settings = await prisma.siteSetting.findFirst()
   const deliverySettings = await prisma.deliverySetting.findFirst()
 
-  const cookieStore = cookies()
+  const cookieStore = await cookies()
   const session = cookieStore.get('user_session')
   let user = null
 

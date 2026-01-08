@@ -5,7 +5,8 @@ import { cookies } from 'next/headers'
 export const dynamic = 'force-dynamic'
 
 export async function POST(req: NextRequest) {
-  const session = cookies().get('user_session')
+  const cookieStore = await cookies()
+  const session = cookieStore.get('user_session')
   if (!session?.value) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }

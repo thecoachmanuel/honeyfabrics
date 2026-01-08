@@ -18,7 +18,7 @@ function verifyPassword(password: string, storedHash: string) {
 }
 
 export async function PUT(req: NextRequest) {
-  const cookieStore = cookies()
+  const cookieStore = await cookies()
   const session = cookieStore.get('user_session')
   if (!session?.value) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

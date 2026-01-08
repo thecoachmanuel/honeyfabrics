@@ -39,7 +39,8 @@ export const metadata: Metadata = {
 import { prisma } from '@lib/db'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const session = cookies().get('user_session')
+  const cookieStore = await cookies()
+  const session = cookieStore.get('user_session')
   const isLoggedIn = !!session?.value
   let isAdmin = false
 
