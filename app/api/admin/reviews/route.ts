@@ -3,7 +3,7 @@ import { prisma } from '@lib/db'
 
 export const dynamic = 'force-dynamic'
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const reviews = await prisma.review.findMany({
     include: { user: true, product: true },
     orderBy: { createdAt: 'desc' }
