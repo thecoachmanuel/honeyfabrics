@@ -1006,7 +1006,7 @@ export default function AdminDashboard({ settings, categories, products, slides,
                       </div>
                     </form>
                   ) : (
-                    <p className="text-sm text-cocoa/80 italic">"{r.comment}"</p>
+                    <p className="text-sm text-cocoa/80 italic">&quot;{r.comment}&quot;</p>
                   )}
                   
                   <div className="mt-2 flex justify-between items-center">
