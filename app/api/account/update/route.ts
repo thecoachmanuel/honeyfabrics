@@ -3,6 +3,8 @@ import { prisma } from '@lib/db'
 import { cookies } from 'next/headers'
 import crypto from 'crypto'
 
+export const dynamic = 'force-dynamic'
+
 function hashPassword(password: string) {
   const salt = crypto.randomBytes(16).toString('hex')
   const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex')
