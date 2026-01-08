@@ -3,6 +3,8 @@ import { writeFile, mkdir } from 'fs/promises'
 import { join } from 'path'
 
 export async function POST(request: Request) {
+  // NOTE: Local file system writes do not work on Vercel (read-only).
+  // In production, use S3, Cloudinary, or Vercel Blob.
   try {
     const data = await request.formData()
     const file: File | null = data.get('file') as unknown as File

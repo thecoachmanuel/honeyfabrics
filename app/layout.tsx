@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     url: 'https://honeyfabrics.com',
     type: 'website'
   },
-  metadataBase: new URL('http://localhost:3000'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
   icons: {
     icon: '/logo.png',
   }

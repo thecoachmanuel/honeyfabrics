@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/db'
 import { isAdmin } from '@/lib/auth'
 import { NextResponse } from 'next/server'
-
-const prisma = new PrismaClient()
 
 const categories = [
   { name: 'Swiss Lace', slug: 'swiss-lace', imageUrl: 'https://images.pexels.com/photos/1235695/pexels-photo-1235695.jpeg' },
