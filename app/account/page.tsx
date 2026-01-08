@@ -7,6 +7,8 @@ import Link from 'next/link'
 import { formatNgn } from '@lib/utils'
 import ProfileEditForm from '@components/ProfileEditForm'
 
+export const dynamic = 'force-dynamic'
+
 export default async function Account() {
   const cookieStore = await cookies()
   const session = cookieStore.get('user_session')
