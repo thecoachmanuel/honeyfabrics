@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@lib/db'
 
-export async function GET() {
+export const dynamic = 'force-dynamic'
+
+export async function GET(req: NextRequest) {
   const reviews = await prisma.review.findMany({
     include: { user: true, product: true },
     orderBy: { createdAt: 'desc' }
