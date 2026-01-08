@@ -3,8 +3,15 @@ import Footer from '@components/Footer'
 import { prisma } from '@lib/db'
 import Image from 'next/image'
 
+export const dynamic = 'force-dynamic'
+
 export default async function About() {
-  const settings = await prisma.siteSetting.findFirst()
+  let settings = null
+  try {
+    settings = await prisma.siteSetting.findFirst()
+  } catch (error) {
+    console.error('Error loading about settings:', error)
+  }
   return (
     <div>
       <Header name={settings?.businessName} logoUrl={settings?.logoUrl ?? undefined} />

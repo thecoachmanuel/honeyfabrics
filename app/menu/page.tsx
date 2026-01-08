@@ -4,9 +4,19 @@ import ProductCard from '@components/ProductCard'
 import { prisma } from '@lib/db'
 import Image from 'next/image'
 
+export const dynamic = 'force-dynamic'
+
 export default async function Menu() {
-  const settings = await prisma.siteSetting.findFirst()
-  const categories = await prisma.category.findMany({ include: { items: { where: { active: true } } } })
+  let settings = null
+  let categories: any[] = []
+
+  try {
+    settings = await prisma.siteSetting.findFirst()
+    categories = await prisma.category.findMany({ include: { items: { where: { active: true } } } })
+  } catch (error) {
+    console.error('Error loading menu data:', error)
+  }
+
   return (
     <div>
       <Header name={settings?.businessName} logoUrl={settings?.logoUrl ?? undefined} />

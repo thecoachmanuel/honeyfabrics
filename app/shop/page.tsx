@@ -5,9 +5,19 @@ import { prisma } from '@lib/db'
 import Image from 'next/image'
 import { Suspense } from 'react'
 
+export const dynamic = 'force-dynamic'
+
 export default async function Shop() {
-  const settings = await prisma.siteSetting.findFirst()
-  const categories = await prisma.category.findMany({ include: { items: { where: { active: true } } } })
+  let settings = null
+  let categories: any[] = []
+
+  try {
+    settings = await prisma.siteSetting.findFirst()
+    categories = await prisma.category.findMany({ include: { items: { where: { active: true } } } })
+  } catch (error) {
+    console.error('Error loading shop data:', error)
+  }
+
   return (
     <div>
       <Header name={settings?.businessName} logoUrl={settings?.logoUrl ?? undefined} />

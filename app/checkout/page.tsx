@@ -4,19 +4,32 @@ import CheckoutForm from '@components/CheckoutForm'
 import { prisma } from '@lib/db'
 import { cookies } from 'next/headers'
 
+export const dynamic = 'force-dynamic'
+
 export default async function CheckoutPage() {
-  const settings = await prisma.siteSetting.findFirst()
-  const deliverySettings = await prisma.deliverySetting.findFirst()
+  let settings = null
+  let deliverySettings = null
+  
+  try {
+    settings = await prisma.siteSetting.findFirst()
+    deliverySettings = await prisma.deliverySetting.findFirst()
+  } catch (e) {
+    console.error('Error loading checkout settings:', e)
+  }
 
   const cookieStore = await cookies()
   const session = cookieStore.get('user_session')
   let user = null
 
   if (session?.value) {
-    user = await prisma.user.findUnique({
-      where: { id: parseInt(session.value) },
-      select: { name: true, email: true, phone: true }
-    })
+    try {
+      user = await prisma.user.findUnique({
+        where: { id: parseInt(session.value) },
+        select: { name: true, email: true, phone: true }
+      })
+    } catch (e) {
+      console.error('Error loading user for checkout:', e)
+    }
   }
 
   return (

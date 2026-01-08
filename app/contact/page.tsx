@@ -5,8 +5,16 @@ import Image from 'next/image'
 
 import { InstagramIcon, TikTokIcon, WhatsAppIcon } from '@components/SocialIcons'
 
+export const dynamic = 'force-dynamic'
+
 export default async function Contact() {
-  const settings = await prisma.siteSetting.findFirst()
+  let settings = null
+  try {
+    settings = await prisma.siteSetting.findFirst()
+  } catch (error) {
+    console.error('Error loading contact settings:', error)
+  }
+
   const wa = settings?.whatsappNumber ?? '08123456789'
   const ig = settings?.instagram ?? 'luxe_fabrics'
   const tk = settings?.tiktok ?? 'luxe_fabrics'

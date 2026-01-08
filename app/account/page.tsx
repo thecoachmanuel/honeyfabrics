@@ -15,16 +15,21 @@ export default async function Account() {
     redirect('/login')
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: parseInt(session.value) },
-    include: {
-      orders: {
-        orderBy: { createdAt: 'desc' },
-        take: 5,
-        include: { items: { include: { product: true } } }
+  let user = null
+  try {
+    user = await prisma.user.findUnique({
+      where: { id: parseInt(session.value) },
+      include: {
+        orders: {
+          orderBy: { createdAt: 'desc' },
+          take: 5,
+          include: { items: { include: { product: true } } }
+        }
       }
-    }
-  })
+    })
+  } catch (error) {
+    console.error('Error loading account:', error)
+  }
 
   if (!user) {
     redirect('/login')
