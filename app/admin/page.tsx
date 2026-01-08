@@ -4,7 +4,7 @@ import AdminDashboard from '@components/AdminDashboard'
 import { prisma } from '@lib/db'
 import { isAdmin } from '@lib/auth'
 import { redirect } from 'next/navigation'
-import { Category, Product, Slide, Order, Message, Notification, Review, DeliverySetting, SiteSetting } from '@prisma/client'
+import { Category, Product, Slide, Order, Message, Notification, Review, DeliverySetting, SiteSetting, User, OrderItem } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
 
@@ -16,10 +16,10 @@ export default async function Admin({ searchParams }: { searchParams: Promise<{ 
   let categories: Category[] = []
   let products: (Product & { category: Category })[] = []
   let slides: Slide[] = []
-  let orders: (Order & { items: { product: Product }[] })[] = []
+  let orders: (Order & { items: (OrderItem & { product: Product })[] })[] = []
   let messages: Message[] = []
   let notifications: Notification[] = []
-  let reviews: (Review & { user: { name: string }, product: Product })[] = []
+  let reviews: (Review & { user: User, product: Product })[] = []
   let deliverySettings: DeliverySetting | null = null
 
   try {
