@@ -21,18 +21,31 @@ function verify(token: string) {
 export async function setAdminSession() {
   const payload = `${Date.now()}`
   const token = sign(payload)
-  const cookieStore = await cookies()
-  cookieStore.set(COOKIE_NAME, token, { httpOnly: true, path: '/', maxAge: 60 * 60 * 24 })
+  try {
+    const cookieStore = await cookies()
+    cookieStore.set(COOKIE_NAME, token, { httpOnly: true, path: '/', maxAge: 60 * 60 * 24 })
+  } catch (e) {
+    console.error('Error setting admin session:', e)
+  }
 }
 
 export async function isAdmin() {
-  const cookieStore = await cookies()
-  const token = cookieStore.get(COOKIE_NAME)?.value
-  if (!token) return false
-  return verify(token)
+  try {
+    const cookieStore = await cookies()
+    const token = cookieStore.get(COOKIE_NAME)?.value
+    if (!token) return false
+    return verify(token)
+  } catch (e) {
+    console.error('Error checking admin status:', e)
+    return false
+  }
 }
 
 export async function clearAdmin() {
-  const cookieStore = await cookies()
-  cookieStore.delete(COOKIE_NAME)
+  try {
+    const cookieStore = await cookies()
+    cookieStore.delete(COOKIE_NAME)
+  } catch (e) {
+    console.error('Error clearing admin session:', e)
+  }
 }

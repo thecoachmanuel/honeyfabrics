@@ -5,18 +5,35 @@ import { prisma } from '@lib/db'
 import { isAdmin } from '@lib/auth'
 import { redirect } from 'next/navigation'
 
+export const dynamic = 'force-dynamic'
+
 export default async function Admin({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   const { tab } = await searchParams
   if (!await isAdmin()) redirect('/admin/login')
-  const settings = await prisma.siteSetting.findFirst()
-  const categories = await prisma.category.findMany()
-  const products = await prisma.product.findMany({ include: { category: true } })
-  const slides = await prisma.slide.findMany()
-  const orders = await prisma.order.findMany({ orderBy: { createdAt: 'desc' }, take: 200, include: { items: { include: { product: true } } } })
-  const messages = await prisma.message.findMany({ orderBy: { createdAt: 'desc' }, take: 200 })
-  const notifications = await prisma.notification.findMany({ orderBy: { createdAt: 'desc' }, take: 200 })
-  const reviews = await prisma.review.findMany({ include: { user: true, product: true }, orderBy: { createdAt: 'desc' } })
-  const deliverySettings = await prisma.deliverySetting.findFirst()
+
+  let settings = null
+  let categories: any[] = []
+  let products: any[] = []
+  let slides: any[] = []
+  let orders: any[] = []
+  let messages: any[] = []
+  let notifications: any[] = []
+  let reviews: any[] = []
+  let deliverySettings = null
+
+  try {
+    settings = await prisma.siteSetting.findFirst()
+    categories = await prisma.category.findMany()
+    products = await prisma.product.findMany({ include: { category: true } })
+    slides = await prisma.slide.findMany()
+    orders = await prisma.order.findMany({ orderBy: { createdAt: 'desc' }, take: 200, include: { items: { include: { product: true } } } })
+    messages = await prisma.message.findMany({ orderBy: { createdAt: 'desc' }, take: 200 })
+    notifications = await prisma.notification.findMany({ orderBy: { createdAt: 'desc' }, take: 200 })
+    reviews = await prisma.review.findMany({ include: { user: true, product: true }, orderBy: { createdAt: 'desc' } })
+    deliverySettings = await prisma.deliverySetting.findFirst()
+  } catch (error) {
+    console.error('Error loading admin dashboard:', error)
+  }
 
   return (
     <div>

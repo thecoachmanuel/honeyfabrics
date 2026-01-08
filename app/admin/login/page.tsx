@@ -4,6 +4,8 @@ import Header from '@components/Header'
 import Footer from '@components/Footer'
 import { useRouter } from 'next/navigation'
 
+export const dynamic = 'force-dynamic'
+
 export default function AdminLogin() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')

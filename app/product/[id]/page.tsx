@@ -8,33 +8,45 @@ import { formatNgn } from '@lib/utils'
 import ProductActions from '@components/ProductActions'
 import ReviewsSection from '@components/ReviewsSection'
 
+export const dynamic = 'force-dynamic'
+
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: paramId } = await params
   const id = Number(paramId)
   if (isNaN(id)) notFound()
 
-  const settings = await prisma.siteSetting.findFirst()
-  const product = await prisma.product.findUnique({ 
-    where: { id },
-    include: {
-      category: true,
-      reviews: {
-        include: { user: { select: { name: true } } },
-        orderBy: { createdAt: 'desc' }
+  let settings = null
+  let product = null
+  let relatedProducts: any[] = []
+
+  try {
+    settings = await prisma.siteSetting.findFirst()
+    product = await prisma.product.findUnique({ 
+      where: { id },
+      include: {
+        category: true,
+        reviews: {
+          include: { user: { select: { name: true } } },
+          orderBy: { createdAt: 'desc' }
+        }
       }
+    })
+    
+    if (product) {
+      relatedProducts = await prisma.product.findMany({
+        where: { 
+          categoryId: product.categoryId,
+          id: { not: product.id },
+          active: true
+        },
+        take: 4
+      })
     }
-  })
+  } catch (error) {
+    console.error('Error loading product page:', error)
+  }
   
   if (!product || !product.active) notFound()
-
-  const relatedProducts = await prisma.product.findMany({
-    where: { 
-      categoryId: product.categoryId,
-      id: { not: product.id },
-      active: true
-    },
-    take: 4
-  })
 
   return (
     <div className="bg-background min-h-screen">
