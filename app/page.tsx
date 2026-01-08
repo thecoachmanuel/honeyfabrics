@@ -5,15 +5,16 @@ import ProductCard from '@components/ProductCard'
 import Link from 'next/link'
 import Image from 'next/image'
 import { prisma } from '@lib/db'
+import { SiteSetting, Slide, Category, Product } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
-  let settings = null
-  let slides = []
-  let categories = []
-  let newArrivals = []
-  let picks = []
+  let settings: SiteSetting | null = null
+  let slides: Slide[] = []
+  let categories: Category[] = []
+  let newArrivals: (Product & { category: Category })[] = []
+  let picks: (Product & { category: Category })[] = []
 
   try {
     settings = await prisma.siteSetting.findFirst()
