@@ -79,7 +79,7 @@ function generatePrice(): number {
   return Math.floor(Math.random() * 28 + 3) * 5000
 }
 
-export async function GET() {
+export async function POST() {
   if (!await isAdmin()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
@@ -139,7 +139,7 @@ export async function GET() {
     })
 
     console.log('Seeding finished.')
-    return NextResponse.json({ message: 'Seeding completed successfully' })
+    return NextResponse.json({ success: true, message: 'Seeding completed successfully' })
 
   } catch (error) {
     console.error('Seeding error:', error)

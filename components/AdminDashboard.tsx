@@ -262,6 +262,26 @@ export default function AdminDashboard({ settings, categories, products, slides,
     }
   }
 
+  const saveProduct = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    try {
+      const res = await fetch('/api/admin/product', {
+        method: 'POST',
+        body: formData
+      })
+      const data = await res.json()
+      if (data.success) {
+        window.location.reload()
+      } else {
+        alert(data.error || 'Failed to save product')
+      }
+    } catch (err) {
+      console.error(err)
+      alert('Error saving product')
+    }
+  }
+
   const saveCategory = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
@@ -299,8 +319,12 @@ export default function AdminDashboard({ settings, categories, products, slides,
     const formData = new FormData(e.currentTarget)
     try {
       const res = await fetch('/api/admin/slide', { method: 'POST', body: formData })
-      if (res.ok) window.location.reload()
-      else alert('Failed to save slide')
+      const data = await res.json()
+      if (data.success) {
+        window.location.reload()
+      } else {
+        alert(data.error || 'Failed to save slide')
+      }
     } catch (err) {
       console.error(err)
       alert('Error saving slide')
@@ -311,13 +335,16 @@ export default function AdminDashboard({ settings, categories, products, slides,
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     try {
-      const res = await fetch('/api/admin/delivery', { 
+      const res = await fetch('/api/admin/delivery-settings', { 
         method: 'POST', 
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(Object.fromEntries(formData as any))
+        body: formData
       })
-      if (res.ok) window.location.reload()
-      else alert('Failed to save delivery settings')
+      const data = await res.json()
+      if (data.success) {
+        window.location.reload()
+      } else {
+        alert(data.error || 'Failed to save delivery settings')
+      }
     } catch (err) {
       console.error(err)
       alert('Error saving delivery settings')
@@ -329,8 +356,12 @@ export default function AdminDashboard({ settings, categories, products, slides,
     const formData = new FormData(e.currentTarget)
     try {
       const res = await fetch('/api/admin/settings', { method: 'POST', body: formData })
-      if (res.ok) window.location.reload()
-      else alert('Failed to save settings')
+      const data = await res.json()
+      if (data.success) {
+        window.location.reload()
+      } else {
+        alert(data.error || 'Failed to save settings')
+      }
     } catch (err) {
       console.error(err)
       alert('Error saving settings')
@@ -673,7 +704,7 @@ export default function AdminDashboard({ settings, categories, products, slides,
               <button onClick={exportProductsPDF} className="btn btn-primary text-xs py-1 px-3 h-auto min-h-0">Export PDF</button>
             </div>
 
-            <form key={editingProduct?.id || 'new-product'} className="card p-6" action="/api/admin/product" method="POST">
+            <form key={editingProduct?.id || 'new-product'} className="card p-6" onSubmit={saveProduct}>
               <div className="flex justify-between items-center mb-4">
                  <h2 className="text-xl font-bold text-cocoa">{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
                  {editingProduct && (
@@ -953,6 +984,32 @@ export default function AdminDashboard({ settings, categories, products, slides,
               </div>
             </div>
           <button className="btn btn-primary mt-6">Save Changes</button>
+
+          <div className="mt-8 pt-8 border-t border-cream">
+            <h3 className="font-bold text-cocoa mb-2">Development Tools</h3>
+            <p className="text-sm text-cocoa/60 mb-4">Use these tools to populate your website with sample data. Only use if your database is empty or you want to add more test data.</p>
+            <button 
+              type="button" 
+              onClick={async () => {
+                if(!confirm('This will add sample products and categories. Continue?')) return;
+                try {
+                  const res = await fetch('/api/admin/seed', { method: 'POST' });
+                  const data = await res.json();
+                  if(data.success) {
+                    alert('Seeding successful! Reloading...');
+                    window.location.reload();
+                  } else {
+                    alert('Seeding failed: ' + (data.error || 'Unknown error'));
+                  }
+                } catch(e) {
+                  alert('Error triggering seed');
+                }
+              }}
+              className="btn btn-outline text-caramel border-caramel hover:bg-caramel hover:text-white"
+            >
+              Seed Database with Sample Data
+            </button>
+          </div>
         </form>
         )}
 
