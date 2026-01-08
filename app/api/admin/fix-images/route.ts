@@ -1,7 +1,12 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@lib/db'
+import { prisma } from '@/lib/db'
+import { isAdmin } from '@/lib/auth'
 
 export async function POST() {
+  if (!await isAdmin()) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const replacements: Record<string, string> = {
     'Chocolate Celebration Cake': 'https://images.pexels.com/photos/291528/pexels-photo-291528.jpeg',
     'Vanilla Berry Cake': 'https://images.pexels.com/photos/102871/pexels-photo-102871.jpeg',

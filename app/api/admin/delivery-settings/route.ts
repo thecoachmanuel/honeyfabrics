@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@lib/db'
+import { prisma } from '@/lib/db'
+import { isAdmin } from '@/lib/auth'
+
+export const dynamic = 'force-dynamic'
 
 export async function POST(req: NextRequest) {
+  if (!await isAdmin()) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   try {
     const form = await req.formData()
     const isActive = form.get('isActive') !== null
@@ -16,7 +23,7 @@ export async function POST(req: NextRequest) {
       create: { id: 1, isActive, method, rate, freeThreshold }
     })
 
-    return NextResponse.redirect(new URL('/admin?tab=delivery', req.url))
+    return NextResponse.json({ success: true })
   } catch (err) {
     console.error('Delivery settings update error', err)
     return NextResponse.json({ error: 'Failed to save delivery settings' }, { status: 500 })

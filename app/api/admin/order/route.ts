@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@lib/db'
+import { prisma } from '@/lib/db'
+import { isAdmin } from '@/lib/auth'
 
 export async function PUT(req: NextRequest) {
+  if (!await isAdmin()) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   try {
     const body = await req.json()
     const { id, status } = body
@@ -23,6 +28,10 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  if (!await isAdmin()) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const { searchParams } = new URL(req.url)
   const id = Number(searchParams.get('id'))
   if (!id) return NextResponse.json({ error: 'Missing ID' }, { status: 400 })
