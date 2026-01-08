@@ -6,8 +6,8 @@ import { buildWhatsappMessage, formatNgn } from '@lib/utils'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export default async function Success({ searchParams }: { searchParams: { reference?: string } }) {
-  const ref = searchParams.reference
+export default async function Success({ searchParams }: { searchParams: Promise<{ reference?: string }> }) {
+  const { reference: ref } = await searchParams
   let status = 'unknown'
   let orderId: number | null = null
   let trackingCode: string | null = null

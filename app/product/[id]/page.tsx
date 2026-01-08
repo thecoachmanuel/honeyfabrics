@@ -8,8 +8,9 @@ import { formatNgn } from '@lib/utils'
 import ProductActions from '@components/ProductActions'
 import ReviewsSection from '@components/ReviewsSection'
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
-  const id = Number(params.id)
+export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id: paramId } = await params
+  const id = Number(paramId)
   if (isNaN(id)) notFound()
 
   const settings = await prisma.siteSetting.findFirst()

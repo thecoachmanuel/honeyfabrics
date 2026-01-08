@@ -6,27 +6,39 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { prisma } from '@lib/db'
 
+export const dynamic = 'force-dynamic'
+
 export default async function Home() {
-  const settings = await prisma.siteSetting.findFirst()
-  const slides = await prisma.slide.findMany({ where: { active: true } })
+  let settings = null
+  let slides = []
+  let categories = []
+  let newArrivals = []
+  let picks = []
+
+  try {
+    settings = await prisma.siteSetting.findFirst()
+    slides = await prisma.slide.findMany({ where: { active: true } })
+    categories = await prisma.category.findMany()
+    newArrivals = await prisma.product.findMany({
+      take: 8,
+      orderBy: { id: 'desc' },
+      include: { category: true }
+    })
+    picks = await prisma.product.findMany({
+      take: 4,
+      skip: 5,
+      include: { category: true }
+    })
+  } catch (error) {
+    console.error('Database Error:', error)
+    // Fallback to empty states or default values is handled by initialization
+  }
+
   const sliderData = slides.length
     ? slides.map((s) => ({ id: String(s.id), imageUrl: s.imageUrl, headline: s.headline, subtext: s.subtext, ctaText: s.ctaText ?? undefined, ctaLink: s.ctaLink ?? undefined }))
     : undefined
   
-  const categories = await prisma.category.findMany()
   const visibleCategories = categories.filter(c => c.imageUrl)
-
-  const newArrivals = await prisma.product.findMany({
-    take: 8,
-    orderBy: { id: 'desc' },
-    include: { category: true }
-  })
-
-  const picks = await prisma.product.findMany({
-    take: 4,
-    skip: 5, // Skip some to get variety
-    include: { category: true }
-  })
 
   return (
     <div className="bg-neutral-50 min-h-screen flex flex-col">

@@ -5,7 +5,8 @@ import { prisma } from '@lib/db'
 import { isAdmin } from '@lib/auth'
 import { redirect } from 'next/navigation'
 
-export default async function Admin({ searchParams }: { searchParams: { tab?: string } }) {
+export default async function Admin({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
+  const { tab } = await searchParams
   if (!await isAdmin()) redirect('/admin/login')
   const settings = await prisma.siteSetting.findFirst()
   const categories = await prisma.category.findMany()
@@ -37,7 +38,7 @@ export default async function Admin({ searchParams }: { searchParams: { tab?: st
           notifications={notifications}
           reviews={reviews}
           deliverySettings={deliverySettings}
-          initialTab={searchParams.tab}
+          initialTab={tab}
         />
       </section>
       <Footer />
